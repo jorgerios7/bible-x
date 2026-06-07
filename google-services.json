@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "579023754349",
+    "project_id": "bible-x-698ef",
+    "storage_bucket": "bible-x-698ef.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:579023754349:android:ca5e277e43368301065b64",
+        "android_client_info": {
+          "package_name": "com.jar.biblex"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXs87A6OMMpnABPEHYqL2JP4bZAWNiLmQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
