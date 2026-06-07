@@ -1,9 +1,11 @@
 import { useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Text, View } from 'react-native';
 import { IconButton, TextInput } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppBackground } from '../../components/AppBackground';
 import { colors } from '../../constants/colors';
+import { spacing } from '../../constants/layout';
 import { ragService } from '../../services/ai/ragService';
 import { firestoreService } from '../../services/firebase/firestoreService';
 import { useAuthStore } from '../../store/authStore';
@@ -23,6 +25,7 @@ const initialMessage: ChatMessage = {
 };
 
 export const AIChatScreen = () => {
+  const insets = useSafeAreaInsets();
   const userId = useAuthStore((state) => state.firebaseUser?.uid);
   const listRef = useRef<FlatList<ChatMessage>>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([initialMessage]);
@@ -67,7 +70,16 @@ export const AIChatScreen = () => {
 
   return (
     <AppBackground>
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <KeyboardAvoidingView
+        style={[
+          styles.container,
+          {
+            paddingTop: spacing.lg + insets.top,
+            paddingBottom: spacing.sm + insets.bottom,
+          },
+        ]}
+        behavior="padding"
+      >
         <View style={styles.header}>
           <Text style={styles.title}>IA Bible X</Text>
           <Text style={styles.subtitle}>RAG preparado com fontes bíblicas locais</Text>

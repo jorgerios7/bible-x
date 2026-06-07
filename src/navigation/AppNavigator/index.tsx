@@ -3,6 +3,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors } from '../../constants/colors';
 import { useAuthStore } from '../../store/authStore';
@@ -52,30 +53,40 @@ const AuthNavigator = () => (
   </AuthStack.Navigator>
 );
 
-const MainTabs = () => (
-  <Tab.Navigator
-    screenOptions={({ route }) => ({
-      headerShown: false,
-      tabBarShowLabel: true,
-      tabBarActiveTintColor: colors.textPrimary,
-      tabBarInactiveTintColor: colors.textDisabled,
-      tabBarStyle: styles.tabBar,
-      tabBarItemStyle: styles.tabBarItem,
-      tabBarLabelStyle: styles.tabBarLabel,
-      tabBarIcon: ({ focused, color, size }) => {
-        const icon = tabIcons[route.name][focused ? 'active' : 'inactive'];
-        return <MaterialCommunityIcons name={icon} size={size ?? 22} color={color} />;
-      },
-      tabBarLabel: labels[route.name],
-    })}
-  >
-    <Tab.Screen name="Home" component={HomeScreen} />
-    <Tab.Screen name="Bible" component={BibleScreen} />
-    <Tab.Screen name="Search" component={SearchScreen} />
-    <Tab.Screen name="Studies" component={StudiesScreen} />
-    <Tab.Screen name="Profile" component={ProfileScreen} />
-  </Tab.Navigator>
-);
+const MainTabs = () => {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarShowLabel: true,
+        tabBarActiveTintColor: colors.textPrimary,
+        tabBarInactiveTintColor: colors.textDisabled,
+        tabBarStyle: [
+          styles.tabBar,
+          {
+            height: 64 + insets.bottom,
+            paddingBottom: Math.max(insets.bottom, 10),
+          },
+        ],
+        tabBarItemStyle: styles.tabBarItem,
+        tabBarLabelStyle: styles.tabBarLabel,
+        tabBarIcon: ({ focused, color, size }) => {
+          const icon = tabIcons[route.name][focused ? 'active' : 'inactive'];
+          return <MaterialCommunityIcons name={icon} size={size ?? 22} color={color} />;
+        },
+        tabBarLabel: labels[route.name],
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Bible" component={BibleScreen} />
+      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="Studies" component={StudiesScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+    </Tab.Navigator>
+  );
+};
 
 export const AppNavigator = () => {
   const isInitializing = useAuthStore((state) => state.isInitializing);
