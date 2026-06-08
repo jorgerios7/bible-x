@@ -31,7 +31,23 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
+.env.*
 .env*.local
+!.env.example
+
+# Firebase and native app credentials
+google-services.json
+GoogleService-Info.plist
+firebase-adminsdk*.json
+serviceAccount*.json
+
+# local service caches
+.firebase/
+
+# EAS local builds
+eas.json.local
+.eas/local-builds/
 
 # typescript
 *.tsbuildinfo
