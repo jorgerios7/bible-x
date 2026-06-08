@@ -13,4 +13,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.glass,
     overflow: 'hidden',
   },
+  pressableCard: {
+    flex: 1,
+  },
 });

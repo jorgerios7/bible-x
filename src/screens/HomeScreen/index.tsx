@@ -45,19 +45,35 @@ export const HomeScreen = () => {
       <VerseCard verse={verseOfDay} />
 
       <View style={styles.quickGrid}>
-        <GlassCard style={styles.quickCard} onPress={() => navigation.navigate('Bible')}>
+        <GlassCard
+          containerStyle={styles.quickCardContainer}
+          style={styles.quickCard}
+          onPress={() => navigation.navigate('Bible')}
+        >
           <MaterialCommunityIcons name="book-open-variant" size={24} color={colors.primary} />
           <Text style={styles.quickTitle}>Ler Bíblia</Text>
         </GlassCard>
-        <GlassCard style={styles.quickCard} onPress={() => navigation.navigate('Search')}>
+        <GlassCard
+          containerStyle={styles.quickCardContainer}
+          style={styles.quickCard}
+          onPress={() => navigation.navigate('Search')}
+        >
           <MaterialCommunityIcons name="text-search" size={24} color={colors.secondary} />
           <Text style={styles.quickTitle}>Pesquisar</Text>
         </GlassCard>
-        <GlassCard style={styles.quickCard} onPress={() => navigation.navigate('Favorites')}>
+        <GlassCard
+          containerStyle={styles.quickCardContainer}
+          style={styles.quickCard}
+          onPress={() => navigation.navigate('Favorites')}
+        >
           <MaterialCommunityIcons name="heart-outline" size={24} color={colors.accentRed} />
           <Text style={styles.quickTitle}>Favoritos</Text>
         </GlassCard>
-        <GlassCard style={styles.quickCard} onPress={() => navigation.navigate('Studies')}>
+        <GlassCard
+          containerStyle={styles.quickCardContainer}
+          style={styles.quickCard}
+          onPress={() => navigation.navigate('Studies')}
+        >
           <MaterialCommunityIcons name="school-outline" size={24} color={colors.accentOrange} />
           <Text style={styles.quickTitle}>Estudos</Text>
         </GlassCard>

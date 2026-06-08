@@ -17,6 +17,7 @@ import { formatReference } from '../../utils/format';
 import { BibleChapterPicker } from './components/BibleChapterPicker';
 import { BibleToolbar } from './components/BibleToolbar';
 import { styles } from './styles';
+import { VerseEditorModal } from './components/VerseEditorModal.tsx';
 
 export const BibleScreen = () => {
   const insets = useSafeAreaInsets();
@@ -191,65 +192,13 @@ export const BibleScreen = () => {
         </View>
       )}
       <Portal>
-        <Modal
-          visible={editorVisible}
+        <VerseEditorModal
+          editorVisible={editorVisible}
+          editorContent={editorContent}
+          onChangeEditorContent={setEditorContent}
+          onShare={shareEditorContent}
           onDismiss={() => setEditorVisible(false)}
-          style={styles.editorModalWrapper}
-          contentContainerStyle={[
-            styles.editorModal,
-            {
-              paddingTop: spacing.lg + insets.top,
-              paddingBottom: spacing.lg + insets.bottom,
-            },
-          ]}
-        >
-          <KeyboardAvoidingView
-            behavior={process.env.EXPO_OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={0}
-            style={styles.editorKeyboardContainer}
-          >
-            <View style={styles.editorHeader}>
-              <View style={styles.editorTitleGroup}>
-                <Text style={styles.editorTitle}>Editor de versículos</Text>
-                <Text style={styles.editorSubtitle}>Escreva notas, organize o texto e compartilhe quando quiser.</Text>
-              </View>
-              <IconButton
-                icon="close"
-                accessibilityLabel="Fechar editor"
-                iconColor={colors.textSecondary}
-                onPress={() => setEditorVisible(false)}
-              />
-            </View>
-            <TextInput
-              mode="outlined"
-              value={editorContent}
-              onChangeText={setEditorContent}
-              multiline
-              textColor={colors.textPrimary}
-              outlineColor={colors.border}
-              activeOutlineColor={colors.primary}
-              placeholder="Escreva suas notas junto dos versículos selecionados..."
-              placeholderTextColor={colors.textDisabled}
-              style={styles.editorInput}
-              contentStyle={styles.editorInputContent}
-              outlineStyle={styles.editorInputOutline}
-            />
-            <View style={styles.editorActions}>
-              <Button mode="text" textColor={colors.textSecondary} onPress={() => setEditorVisible(false)}>
-                Fechar
-              </Button>
-              <Button
-                mode="contained"
-                icon="share-variant"
-                buttonColor={colors.primary}
-                textColor={colors.textPrimary}
-                onPress={shareEditorContent}
-              >
-                Compartilhar
-              </Button>
-            </View>
-          </KeyboardAvoidingView>
-        </Modal>
+        />
       </Portal>
     </ScreenContainer>
   );

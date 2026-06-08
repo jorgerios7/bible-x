@@ -30,8 +30,11 @@ export const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: spacing.md,
   },
+  quickCardContainer: {
+    flexBasis: '47%',
+    flexGrow: 1,
+  },
   quickCard: {
-    width: '47%',
     minHeight: 112,
     justifyContent: 'space-between',
   },
