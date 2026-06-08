@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
   useAnimatedStyle,
@@ -37,15 +37,7 @@ const AnimatedLogo = ({ size, showName }: Required<GradientLogoProps>) => {
 
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
-      <LinearGradient colors={colors.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.mark}>
-        <Text style={[styles.markText, size === 'sm' && styles.markTextSmall]}>BX</Text>
-      </LinearGradient>
-      {showName ? (
-        <View style={styles.textGroup}>
-          <Text style={[styles.name, size === 'sm' && styles.nameSmall]}>Bible X</Text>
-          <Text style={styles.subtitle}>Estudo bíblico com IA</Text>
-        </View>
-      ) : null}
+      <Image source={require('../../../assets/adaptive-icon.png')} style={styles.logo} />
     </Animated.View>
   );
 };

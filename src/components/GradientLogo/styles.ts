@@ -24,6 +24,11 @@ export const styles = StyleSheet.create({
   markTextSmall: {
     fontSize: 18,
   },
+  logo: {
+    width: 300,
+    height: 300,
+    borderRadius: radius.xl,
+  },
   textGroup: {
     alignItems: 'center',
     gap: spacing.xs,

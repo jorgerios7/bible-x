@@ -11,11 +11,6 @@ export const styles = StyleSheet.create({
   heroText: {
     gap: spacing.sm,
   },
-  kicker: {
-    ...typography.label,
-    color: colors.primary,
-    fontSize: 14,
-  },
   title: {
     ...typography.title,
     fontSize: 34,

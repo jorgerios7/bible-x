@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
@@ -34,7 +34,6 @@ export const HomeScreen = () => {
     <ScreenContainer>
       <View style={styles.hero}>
         <View style={styles.heroText}>
-          <Text style={styles.kicker}>Bible X</Text>
           <Text style={styles.title}>Olá, {profile?.name?.split(' ')[0] ?? 'Jorge'}</Text>
           <Text style={styles.subtitle}>Um painel de estudo bíblico com leitura, IA, planos e anotações.</Text>
         </View>
