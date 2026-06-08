@@ -32,6 +32,7 @@ export const AIChatScreen = () => {
   const [text, setText] = useState('');
   const [isSending, setSending] = useState(false);
 
+
   const sendMessage = async () => {
     const content = sanitizeText(text);
 
@@ -74,8 +75,8 @@ export const AIChatScreen = () => {
         style={[
           styles.container,
           {
-            paddingTop: spacing.lg + insets.top,
-            paddingBottom: spacing.sm + insets.bottom,
+            marginTop: spacing.lg + insets.top,
+            marginBottom: spacing.sm + insets.bottom,
           },
         ]}
         behavior="padding"

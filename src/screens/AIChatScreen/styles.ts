@@ -8,8 +8,6 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xxl,
-    paddingBottom: spacing.md,
     gap: spacing.md,
   },
   header: {
