@@ -1,7 +1,9 @@
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   onAuthStateChanged,
   sendPasswordResetEmail,
+  signInWithCredential,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
@@ -27,12 +29,37 @@ const createProfile = async (user: User, name: string): Promise<AppUser> => {
     name: sanitizeText(name),
     email: user.email ?? '',
     createdAt: nowIso(),
-    stats: defaultStats,
+    stats: { ...defaultStats },
   };
 
   await setDoc(doc(db, 'users', user.uid), profile, { merge: true });
 
   return profile;
+};
+
+const getProfile = async (userId: string): Promise<AppUser | null> => {
+  const snapshot = await getDoc(doc(db, 'users', userId));
+
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  return snapshot.data() as AppUser;
+};
+
+const getProfileName = (user: User) => {
+  const fallbackFromEmail = user.email?.split('@')[0] ?? '';
+  return sanitizeText(user.displayName ?? fallbackFromEmail) || 'Usuário Bible X';
+};
+
+const ensureProfile = async (user: User) => {
+  const existingProfile = await getProfile(user.uid);
+
+  if (existingProfile) {
+    return existingProfile;
+  }
+
+  return createProfile(user, getProfileName(user));
 };
 
 const mapAuthError = (error: unknown) => {
@@ -42,6 +69,12 @@ const mapAuthError = (error: unknown) => {
   if (code.includes('email-already-in-use')) return 'Este email já está cadastrado.';
   if (code.includes('weak-password')) return 'Use uma senha com pelo menos 6 caracteres.';
   if (code.includes('too-many-requests')) return 'Muitas tentativas. Tente novamente em alguns minutos.';
+  if (code.includes('account-exists-with-different-credential')) {
+    return 'Este email já está vinculado a outro método de login.';
+  }
+  if (code.includes('operation-not-allowed')) {
+    return 'Ative o provedor Google no Firebase Authentication.';
+  }
 
   return 'Não foi possível concluir a ação. Verifique os dados e tente novamente.';
 };
@@ -49,15 +82,7 @@ const mapAuthError = (error: unknown) => {
 export const authService = {
   onAuthStateChanged: (callback: (user: User | null) => void) => onAuthStateChanged(auth, callback),
 
-  async getProfile(userId: string): Promise<AppUser | null> {
-    const snapshot = await getDoc(doc(db, 'users', userId));
-
-    if (!snapshot.exists()) {
-      return null;
-    }
-
-    return snapshot.data() as AppUser;
-  },
+  getProfile,
 
   async signIn(email: string, password: string) {
     if (!isValidEmail(email)) {
@@ -98,6 +123,22 @@ export const authService = {
 
     try {
       await sendPasswordResetEmail(auth, email.trim());
+    } catch (error) {
+      throw new Error(mapAuthError(error));
+    }
+  },
+
+  async signInWithGoogleIdToken(idToken: string) {
+    if (!idToken) {
+      throw new Error('Token Google inválido.');
+    }
+
+    try {
+      const credential = GoogleAuthProvider.credential(idToken);
+      const userCredential = await signInWithCredential(auth, credential);
+      await ensureProfile(userCredential.user);
+
+      return userCredential;
     } catch (error) {
       throw new Error(mapAuthError(error));
     }

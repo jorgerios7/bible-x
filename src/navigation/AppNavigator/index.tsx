@@ -3,6 +3,8 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors } from '../../constants/colors';
@@ -20,7 +22,6 @@ import { RegisterScreen } from '../../screens/RegisterScreen';
 import { SearchScreen } from '../../screens/SearchScreen';
 import { SettingsScreen } from '../../screens/SettingsScreen';
 import { SplashScreen } from '../../screens/SplashScreen';
-import { StudiesScreen } from '../../screens/StudiesScreen';
 import { styles } from './styles';
 
 type IconName = ComponentProps<typeof MaterialCommunityIcons>['name'];
@@ -33,7 +34,7 @@ const tabIcons: Record<keyof MainTabParamList, { active: IconName; inactive: Ico
   Home: { active: 'home-variant', inactive: 'home-variant-outline' },
   Bible: { active: 'book-open-page-variant', inactive: 'book-open-page-variant-outline' },
   Search: { active: 'text-search', inactive: 'text-search' },
-  Studies: { active: 'school', inactive: 'school-outline' },
+  AI: { active: 'creation', inactive: 'creation-outline' },
   Profile: { active: 'account-circle', inactive: 'account-circle-outline' },
 };
 
@@ -41,7 +42,7 @@ const labels: Record<keyof MainTabParamList, string> = {
   Home: 'Home',
   Bible: 'Bíblia',
   Search: 'Pesquisa',
-  Studies: 'Estudos',
+  AI: 'IA',
   Profile: 'Perfil',
 };
 
@@ -81,8 +82,8 @@ const MainTabs = () => {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Bible" component={BibleScreen} />
+      <Tab.Screen name="AI" component={AIChatScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Studies" component={StudiesScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
@@ -100,7 +101,6 @@ export const AppNavigator = () => {
         ) : firebaseUser ? (
           <>
             <RootStack.Screen name="Main" component={MainTabs} />
-            <RootStack.Screen name="AIChat" component={AIChatScreen} />
             <RootStack.Screen name="Favorites" component={FavoritesScreen} />
             <RootStack.Screen name="Settings" component={SettingsScreen} />
           </>

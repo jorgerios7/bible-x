@@ -14,7 +14,7 @@ import { styles } from './styles';
 type LoginScreenProps = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
 export const LoginScreen = ({ navigation }: LoginScreenProps) => {
-  const { signIn, isSubmitting } = useAuth();
+  const { signIn, signInWithGoogle, isSubmitting, isGoogleSubmitting } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [secureText, setSecureText] = useState(true);
@@ -24,6 +24,14 @@ export const LoginScreen = ({ navigation }: LoginScreenProps) => {
       await signIn(email, password);
     } catch (error) {
       Alert.alert('Não foi possível entrar', error instanceof Error ? error.message : 'Tente novamente.');
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      Alert.alert('Não foi possível entrar com Google', error instanceof Error ? error.message : 'Tente novamente.');
     }
   };
 
@@ -69,7 +77,26 @@ export const LoginScreen = ({ navigation }: LoginScreenProps) => {
           style={styles.input}
           outlineStyle={styles.inputOutline}
         />
-        <GradientButton label="Entrar" icon="login" onPress={handleSubmit} loading={isSubmitting} />
+        <GradientButton
+          label="Entrar"
+          icon="login"
+          onPress={handleSubmit}
+          loading={isSubmitting}
+          disabled={isGoogleSubmitting}
+        />
+        <View style={styles.separator}>
+          <View style={styles.separatorLine} />
+          <Text style={styles.separatorText}>ou</Text>
+          <View style={styles.separatorLine} />
+        </View>
+        <GradientButton
+          label="Entrar com Google"
+          icon="google"
+          variant="subtle"
+          onPress={handleGoogleSignIn}
+          loading={isGoogleSubmitting}
+          disabled={isSubmitting}
+        />
         <Button mode="text" textColor={colors.textSecondary} onPress={() => navigation.navigate('Register')}>
           Cadastrar
         </Button>

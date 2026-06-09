@@ -33,4 +33,19 @@ export const styles = StyleSheet.create({
   inputOutline: {
     borderRadius: radius.lg,
   },
+  separator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  separatorLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.glassBorder,
+  },
+  separatorText: {
+    ...typography.label,
+    color: colors.textDisabled,
+    fontSize: 12,
+  },
 });

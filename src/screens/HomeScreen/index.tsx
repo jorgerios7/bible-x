@@ -3,7 +3,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Chip, ProgressBar } from 'react-native-paper';
+import { ProgressBar } from 'react-native-paper';
 
 import { GlassCard } from '../../components/GlassCard';
 import { GradientButton } from '../../components/GradientButton';
@@ -11,7 +11,7 @@ import { ScreenContainer } from '../../components/ScreenContainer';
 import { SectionHeader } from '../../components/SectionHeader';
 import { VerseCard } from '../../components/VerseCard';
 import { colors } from '../../constants/colors';
-import { featuredStudies, readingPlans } from '../../constants/mockData';
+import { readingPlans } from '../../constants/mockData';
 import { bibleService } from '../../services/bible/bibleService';
 import { useAuthStore } from '../../store/authStore';
 import { useBibleStore } from '../../store/bibleStore';
@@ -35,9 +35,7 @@ export const HomeScreen = () => {
       <View style={styles.hero}>
         <View style={styles.heroText}>
           <Text style={styles.title}>Olá, {profile?.name?.split(' ')[0] ?? 'Jorge'}</Text>
-          <Text style={styles.subtitle}>Um painel de estudo bíblico com leitura, IA, planos e anotações.</Text>
         </View>
-        <GradientButton label="Conversar com IA" icon="creation-outline" onPress={() => navigation.navigate('AIChat')} />
       </View>
 
       <SectionHeader title="Versículo do dia" subtitle="Uma passagem para abrir seu estudo." />
@@ -68,28 +66,7 @@ export const HomeScreen = () => {
           <MaterialCommunityIcons name="heart-outline" size={24} color={colors.accentRed} />
           <Text style={styles.quickTitle}>Favoritos</Text>
         </GlassCard>
-        <GlassCard
-          containerStyle={styles.quickCardContainer}
-          style={styles.quickCard}
-          onPress={() => navigation.navigate('Studies')}
-        >
-          <MaterialCommunityIcons name="school-outline" size={24} color={colors.accentOrange} />
-          <Text style={styles.quickTitle}>Estudos</Text>
-        </GlassCard>
       </View>
-
-      <SectionHeader title="Últimos estudos" subtitle="Continue por temas, personagens ou livros." />
-      {featuredStudies.slice(0, 2).map((study) => (
-        <GlassCard key={study.id}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>{study.title}</Text>
-            <Chip compact style={styles.categoryChip} textStyle={styles.categoryText}>
-              {study.category}
-            </Chip>
-          </View>
-          <Text style={styles.cardDescription}>{study.description}</Text>
-        </GlassCard>
-      ))}
 
       <SectionHeader title="Histórico recente" />
       <GlassCard>

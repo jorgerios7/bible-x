@@ -15,7 +15,7 @@ export interface AppUser {
   stats: UserStats;
 }
 
-export type FavoriteKind = 'verse' | 'study' | 'chat';
+export type FavoriteKind = 'verse' | 'chat';
 
 export interface FavoriteItem {
   id: string;
@@ -33,15 +33,6 @@ export interface Note {
   reference?: string;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface Study {
-  id: string;
-  title: string;
-  category: 'Temático' | 'Personagem' | 'Livro';
-  description: string;
-  references: string[];
-  estimatedMinutes: number;
 }
 
 export interface ReadingPlan {

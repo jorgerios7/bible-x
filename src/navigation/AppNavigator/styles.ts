@@ -23,4 +23,24 @@ export const styles = StyleSheet.create({
     ...typography.label,
     fontSize: 11,
   },
+  aiTabButton: {
+    top: -18,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: radius.pill,
+  },
+  aiTabButtonPressed: {
+    opacity: 0.82,
+  },
+  aiButton: {
+    width: 58,
+    height: 58,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.22)',
+    backgroundColor: colors.primary,
+  },
 });

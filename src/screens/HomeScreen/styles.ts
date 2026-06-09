@@ -52,15 +52,6 @@ export const styles = StyleSheet.create({
     ...typography.subtitle,
     lineHeight: 21,
   },
-  categoryChip: {
-    borderRadius: radius.pill,
-    backgroundColor: 'rgba(122,92,255,0.18)',
-  },
-  categoryText: {
-    ...typography.label,
-    color: colors.textPrimary,
-    fontSize: 12,
-  },
   historyText: {
     ...typography.body,
     fontSize: 16,

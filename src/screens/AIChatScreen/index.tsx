@@ -75,8 +75,9 @@ export const AIChatScreen = () => {
         style={[
           styles.container,
           {
-            marginTop: spacing.lg + insets.top,
-            marginBottom: spacing.sm + insets.bottom,
+            paddingTop: spacing.lg + insets.top,
+            paddingBottom: spacing.sm + insets.bottom,
+            marginBottom: spacing.xl,
           },
         ]}
         behavior="padding"
