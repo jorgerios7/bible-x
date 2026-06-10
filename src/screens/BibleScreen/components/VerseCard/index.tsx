@@ -36,16 +36,17 @@ export const VerseCard = ({
           <Text style={[styles.verseNumber, selected && styles.verseNumberSelected]}>{verse.verse}</Text>
           <Text style={[styles.readerText, selected && styles.readerTextSelected]}>{verse.text}</Text>
         </View>
-        {isFavorite && (
+      </Pressable>
+      {isFavorite && (
+        <View style={styles.readerFavorite}>
           <IconButton
             icon={isFavorite ? 'heart' : 'heart-outline'}
             iconColor={isFavorite ? colors.accentRed : colors.textDisabled}
             size={18}
-            style={styles.readerFavorite}
             onPress={() => onFavorite?.(verse)}
           />
-        )}
-      </Pressable>
+        </View>
+      )}
     </View>
   );
 };

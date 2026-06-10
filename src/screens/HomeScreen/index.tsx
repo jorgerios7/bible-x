@@ -34,7 +34,7 @@ export const HomeScreen = () => {
     <ScreenContainer>
       <View style={styles.hero}>
         <View style={styles.heroText}>
-          <Text style={styles.title}>Olá, {profile?.name?.split(' ')[0] ?? 'Jorge'}</Text>
+          <Text style={styles.title}>Olá, {profile?.name?.split(' ')[0]}</Text>
         </View>
       </View>
 

@@ -32,18 +32,17 @@ export const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   readerCard: {
-    position: 'relative',
-    paddingRight: 10,
   },
   readerCardFavorite: {
-    paddingVertical: 20,
+    paddingTop: 25,
+    paddingRight: 10,
     borderWidth: 1,
     borderColor: colors.textPrimary,
     borderRadius: 15,
     marginVertical: 1
   },
   readerPressable: {
-    paddingVertical: 2,
+    paddingVertical: 2
   },
   readerPressed: {
     opacity: 0.72,
@@ -77,9 +76,8 @@ export const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   readerFavorite: {
-    position: 'absolute',
-    right: -5,
-    top: 30,
-    margin: 0,
+    alignItems: 'flex-end',
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
   },
 });
