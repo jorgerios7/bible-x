@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Share, View } from 'react-native';
 import { Portal } from 'react-native-paper';
 import { LoadingSkeleton } from '../../components/LoadingSkeleton';
+import { EmptyState } from '../../components/EmptyState';
 import { ScreenContainer } from '../../components/ScreenContainer';
 import { SectionHeader } from '../../components/SectionHeader';
 import { VerseCard } from './components/VerseCard';
@@ -17,7 +18,17 @@ import { VerseEditorModal } from './components/VerseEditorModal.tsx';
 import { SelectionBar } from './components/SelectionBar';
 
 export const BibleScreen = () => {
-  const { books, currentChapter, isLoading, selectChapter, nextChapter, previousChapter } = useBible();
+  const {
+    books,
+    currentChapter,
+    isLoading,
+    selectedBook,
+    selectedChapter,
+    selectBook,
+    selectChapter,
+    nextChapter,
+    previousChapter,
+  } = useBible();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedVerses, setSelectedVerses] = useState<Verse[]>([]);
@@ -133,26 +144,43 @@ export const BibleScreen = () => {
     setEditorContent('');
   };
 
+  const handleSelectBook = (bookAbbrev: string) => {
+    clearVerseSelection();
+    selectBook(bookAbbrev);
+  };
+
+  const handleSelectChapter = (bookAbbrev: string, chapter: number) => {
+    clearVerseSelection();
+    selectChapter(bookAbbrev, chapter);
+  };
+
+  const emptyStateDescription = selectedBook
+    ? 'Selecione um capítulo acima para carregar os versículos.'
+    : 'Selecione um livro e um capítulo acima para iniciar a leitura.';
+
   return (
     <ScreenContainer refreshing={refreshing} onRefresh={handleRefresh}>
       <SectionHeader
         title="Bíblia"
-        subtitle="Toque e segure um versículo para selecionar e compartilhar passagens."
+        subtitle="Escolha um livro e capítulo para ler. Depois toque e segure um versículo para selecionar."
       />
       <BibleChapterPicker
         books={books}
-        selectedBook={currentChapter.book}
-        selectedChapter={currentChapter.chapter}
-        onSelect={selectChapter}
+        selectedBook={selectedBook}
+        selectedChapter={selectedChapter}
+        onSelectBook={handleSelectBook}
+        onSelect={handleSelectChapter}
       />
-      <BibleToolbar
-        title={`${currentChapter.book.name} ${currentChapter.chapter}`}
-        onPrevious={previousChapter}
-        onNext={nextChapter}
-      />
+      {currentChapter ? (
+        <BibleToolbar
+          title={`${currentChapter.book.name} ${currentChapter.chapter}`}
+          onPrevious={previousChapter}
+          onNext={nextChapter}
+        />
+      ) : null}
 
       <SelectionBar
-        visible={selectionMode}
+        visible={selectionMode && Boolean(currentChapter)}
         input={selectedVerses}
         onClear={clearVerseSelection}
         onPressVersesEditor={openSelectedVersesEditor}
@@ -162,7 +190,7 @@ export const BibleScreen = () => {
 
       {isLoading ? (
         <LoadingSkeleton rows={6} />
-      ) : (
+      ) : currentChapter && currentChapter.verses.length > 0 ? (
         <View style={styles.verses}>
           {currentChapter.verses.map((verse) => (
             <VerseCard
@@ -177,6 +205,12 @@ export const BibleScreen = () => {
             />
           ))}
         </View>
+      ) : (
+        <EmptyState
+          icon="book-open-page-variant-outline"
+          title="Nenhum versículo na tela"
+          description={emptyStateDescription}
+        />
       )}
       <Portal>
         <VerseEditorModal

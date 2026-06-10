@@ -8,8 +8,9 @@ import { styles } from './styles';
 
 type BibleChapterPickerProps = {
   books: BibleBook[];
-  selectedBook: BibleBook;
-  selectedChapter: number;
+  selectedBook: BibleBook | null;
+  selectedChapter: number | null;
+  onSelectBook: (bookAbbrev: string) => void;
   onSelect: (bookAbbrev: string, chapter: number) => void;
 };
 
@@ -17,11 +18,12 @@ export const BibleChapterPicker = ({
   books,
   selectedBook,
   selectedChapter,
+  onSelectBook,
   onSelect,
 }: BibleChapterPickerProps) => {
   const [bookMenuVisible, setBookMenuVisible] = useState(false);
   const [chapterMenuVisible, setChapterMenuVisible] = useState(false);
-  const chapters = Array.from({ length: selectedBook.chapters }, (_, index) => index + 1);
+  const chapters = selectedBook ? Array.from({ length: selectedBook.chapters }, (_, index) => index + 1) : [];
 
   return (
     <View style={styles.container}>
@@ -38,7 +40,7 @@ export const BibleChapterPicker = ({
               style={styles.button}
               onPress={() => setBookMenuVisible(true)}
             >
-              {selectedBook.name}
+              {selectedBook?.name ?? 'Selecionar livro'}
             </Button>
           }
         >
@@ -48,8 +50,9 @@ export const BibleChapterPicker = ({
                 key={book.abbrev}
                 title={book.name}
                 onPress={() => {
-                  onSelect(book.abbrev, 1);
+                  onSelectBook(book.abbrev);
                   setBookMenuVisible(false);
+                  setChapterMenuVisible(false);
                 }}
               />
             ))}
@@ -63,11 +66,12 @@ export const BibleChapterPicker = ({
             <Button
               mode="outlined"
               icon="format-list-numbered"
-              textColor={colors.textPrimary}
+              textColor={selectedBook ? colors.textPrimary : colors.textSecondary}
               style={styles.chapterButton}
+              disabled={!selectedBook}
               onPress={() => setChapterMenuVisible(true)}
             >
-              {selectedChapter}
+              {selectedChapter ?? 'Capítulo'}
             </Button>
           }
         >
@@ -77,7 +81,10 @@ export const BibleChapterPicker = ({
                 key={chapter}
                 title={`Capítulo ${chapter}`}
                 onPress={() => {
-                  onSelect(selectedBook.abbrev, chapter);
+                  if (selectedBook) {
+                    onSelect(selectedBook.abbrev, chapter);
+                  }
+
                   setChapterMenuVisible(false);
                 }}
               />
@@ -85,22 +92,24 @@ export const BibleChapterPicker = ({
           </ScrollView>
         </Menu>
       </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
-        {chapters.slice(0, 20).map((chapter) => (
-          <Chip
-            key={chapter}
-            selected={chapter === selectedChapter}
-            showSelectedOverlay={false}
-            selectedColor={colors.textPrimary}
-            style={[styles.chip, chapter === selectedChapter && styles.selectedChip]}
-            textStyle={styles.chipText}
-            onPress={() => onSelect(selectedBook.abbrev, chapter)}
-          >
-            {chapter}
-          </Chip>
-        ))}
-        {chapters.length > 20 ? <Text style={styles.moreText}>+{chapters.length - 20}</Text> : null}
-      </ScrollView>
+      {selectedBook ? (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+          {chapters.slice(0, 20).map((chapter) => (
+            <Chip
+              key={chapter}
+              selected={chapter === selectedChapter}
+              showSelectedOverlay={false}
+              selectedColor={colors.textPrimary}
+              style={[styles.chip, chapter === selectedChapter && styles.selectedChip]}
+              textStyle={styles.chipText}
+              onPress={() => onSelect(selectedBook.abbrev, chapter)}
+            >
+              {chapter}
+            </Chip>
+          ))}
+          {chapters.length > 20 ? <Text style={styles.moreText}>+{chapters.length - 20}</Text> : null}
+        </ScrollView>
+      ) : null}
     </View>
   );
 };
