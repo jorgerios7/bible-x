@@ -1,14 +1,10 @@
 import { useMemo, useState } from 'react';
-import { KeyboardAvoidingView, Share, Text, View } from 'react-native';
-import { Button, IconButton, Modal, Portal, TextInput } from 'react-native-paper';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
+import { Share, View } from 'react-native';
+import { Portal } from 'react-native-paper';
 import { LoadingSkeleton } from '../../components/LoadingSkeleton';
 import { ScreenContainer } from '../../components/ScreenContainer';
 import { SectionHeader } from '../../components/SectionHeader';
-import { VerseCard } from '../../components/VerseCard';
-import { colors } from '../../constants/colors';
-import { spacing } from '../../constants/layout';
+import { VerseCard } from './components/VerseCard';
 import { useBible } from '../../hooks/useBible';
 import { useFavorites } from '../../hooks/useFavorites';
 import type { Verse } from '../../types';
@@ -18,9 +14,9 @@ import { BibleChapterPicker } from './components/BibleChapterPicker';
 import { BibleToolbar } from './components/BibleToolbar';
 import { styles } from './styles';
 import { VerseEditorModal } from './components/VerseEditorModal.tsx';
+import { SelectionBar } from './components/SelectionBar';
 
 export const BibleScreen = () => {
-  const insets = useSafeAreaInsets();
   const { books, currentChapter, isLoading, selectChapter, nextChapter, previousChapter } = useBible();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
   const [refreshing, setRefreshing] = useState(false);
@@ -42,11 +38,12 @@ export const BibleScreen = () => {
     [selectedVerses],
   );
 
-  const toggleFavorite = (verse: Verse) => {
-    const favoriteId = `verse-${verse.id}`;
+  const getVerseFavoriteId = (verse: Verse) => `verse-${verse.id}`;
+
+  const favoriteVerse = (verse: Verse) => {
+    const favoriteId = getVerseFavoriteId(verse);
 
     if (isFavorite(favoriteId)) {
-      removeFavorite(favoriteId).catch(() => undefined);
       return;
     }
 
@@ -58,6 +55,26 @@ export const BibleScreen = () => {
       verse,
       createdAt: nowIso(),
     }).catch(() => undefined);
+  };
+
+  const toggleFavorite = (verse: Verse) => {
+    const favoriteId = getVerseFavoriteId(verse);
+
+    if (isFavorite(favoriteId)) {
+      removeFavorite(favoriteId).catch(() => undefined);
+      return;
+    }
+
+    favoriteVerse(verse);
+  };
+
+  const favoriteSelectedVerses = () => {
+    if (!selectedVerses.length) {
+      return;
+    }
+
+    selectedVerses.forEach(favoriteVerse);
+    setSelectedVerses([]);
   };
 
   const handleRefresh = () => {
@@ -133,45 +150,16 @@ export const BibleScreen = () => {
         onPrevious={previousChapter}
         onNext={nextChapter}
       />
-      {selectionMode ? (
-        <View style={styles.selectionBar}>
-          <View style={styles.selectionCounter}>
-            <Text style={styles.selectionCount}>
-              {selectedVerses.length} {selectedVerses.length === 1 ? 'versículo selecionado' : 'versículos selecionados'}
-            </Text>
-            <IconButton
-              icon="close-circle-outline"
-              accessibilityLabel="Cancelar seleção"
-              iconColor={colors.textSecondary}
-              size={22}
-              style={styles.cancelSelectionButton}
-              onPress={clearVerseSelection}
-            />
-          </View>
-          <View style={styles.selectionActions}>
-            <IconButton
-              icon="note-edit-outline"
-              accessibilityLabel="Editar versículos selecionados"
-              mode="contained"
-              containerColor="rgba(255,255,255,0.10)"
-              iconColor={colors.textPrimary}
-              size={22}
-              style={styles.selectionActionButton}
-              onPress={openSelectedVersesEditor}
-            />
-            <IconButton
-              icon="share-variant"
-              accessibilityLabel="Compartilhar versículos selecionados"
-              mode="contained"
-              containerColor={colors.primary}
-              iconColor={colors.textPrimary}
-              size={22}
-              style={styles.selectionActionButton}
-              onPress={shareSelectedVerses}
-            />
-          </View>
-        </View>
-      ) : null}
+
+      <SelectionBar
+        visible={selectionMode}
+        input={selectedVerses}
+        onClear={clearVerseSelection}
+        onPressVersesEditor={openSelectedVersesEditor}
+        onShareVerses={shareSelectedVerses}
+        onFavoriteVerses={favoriteSelectedVerses}
+      />
+
       {isLoading ? (
         <LoadingSkeleton rows={6} />
       ) : (
@@ -180,13 +168,12 @@ export const BibleScreen = () => {
             <VerseCard
               key={verse.id}
               verse={verse}
-              isFavorite={isFavorite(`verse-${verse.id}`)}
+              isFavorite={isFavorite(getVerseFavoriteId(verse))}
               onFavorite={toggleFavorite}
               onLongPress={() => startVerseSelection(verse)}
               onPress={() => toggleVerseSelection(verse)}
               selected={selectedVerseIds.has(verse.id)}
               selectionMode={selectionMode}
-              variant="reader"
             />
           ))}
         </View>
