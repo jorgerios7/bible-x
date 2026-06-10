@@ -162,7 +162,6 @@ export const BibleScreen = () => {
     <ScreenContainer refreshing={refreshing} onRefresh={handleRefresh}>
       <SectionHeader
         title="Bíblia"
-        subtitle="Escolha um livro e capítulo para ler. Depois toque e segure um versículo para selecionar."
       />
       <BibleChapterPicker
         books={books}
