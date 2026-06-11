@@ -3,6 +3,7 @@ import { collection, deleteDoc, doc, getDocs, orderBy, query, setDoc } from 'fir
 import { db } from '../../firebase/config';
 import type { ChatMessage, FavoriteItem, Note, ReadingPlan } from '../../types';
 import { sanitizeText } from '../../utils/sanitize';
+import { chatSessionService } from './chatSessionService';
 
 export const firestoreService = {
   async saveFavorite(userId: string, favorite: FavoriteItem) {
@@ -32,17 +33,10 @@ export const firestoreService = {
   },
 
   async saveMessage(userId: string, chatId: string, message: ChatMessage) {
-    await setDoc(doc(db, 'users', userId, 'chats', chatId, 'messages', message.id), message);
-    await setDoc(
-      doc(db, 'users', userId, 'chats', chatId),
-      {
-        id: chatId,
-        title: message.content.slice(0, 48),
-        lastMessage: message.content.slice(0, 140),
-        updatedAt: message.createdAt,
-      },
-      { merge: true },
-    );
+    await chatSessionService.saveMessage(userId, chatId, message, {
+      title: message.role === 'user' ? message.content : undefined,
+      createdAt: message.createdAt,
+    });
   },
 
   async saveReadingPlan(userId: string, plan: ReadingPlan) {

@@ -12,21 +12,40 @@ type RagAnswer = {
 const createId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
 class RagService {
-  async answer(question: string, chatId = 'local-chat'): Promise<RagAnswer> {
+  getSources(question: string, limit = 5): Verse[] {
     const safeQuestion = sanitizeText(question);
-    const sources = bibleService.semanticSearch(safeQuestion, 5).map((result) => result.verse);
-    const sourceText = sources
-      .slice(0, 3)
+
+    return bibleService.semanticSearch(safeQuestion, limit).map((result) => result.verse);
+  }
+
+  formatSources(sources: Verse[], limit = 3): string {
+    return sources
+      .slice(0, limit)
       .map((verse) => `${formatReference(verse.book, verse.chapter, verse.verse)}: ${verse.text}`)
       .join('\n\n');
+  }
 
-    const content = [
-      `Aqui vai um caminho de estudo para a sua pergunta: "${safeQuestion}".`,
+  buildLocalStudyResponse(
+    question: string,
+    sources: Verse[],
+    options: { prefix?: string } = {},
+  ): string {
+    const safeQuestion = sanitizeText(question);
+    const sourceText = this.formatSources(sources, 3);
+
+    return [
+      options.prefix ?? `Aqui vai um caminho de estudo para a sua pergunta: "${safeQuestion}".`,
       sourceText
         ? `\nPassagens relacionadas:\n${sourceText}`
         : '\nNão encontrei uma referência direta no índice local, mas posso ajudar a refinar a busca por tema, livro ou palavra-chave.',
-      '\n\nArquitetura preparada para RAG: busca semântica local -> versículos relacionados -> chamada segura a um backend com OpenAI -> resposta final com fontes. A chamada ao modelo deve ficar em backend/API, não no app cliente.',
+      '\n\nSugestão: observe o contexto da passagem, procure palavras repetidas e transforme a leitura em uma oração prática.',
     ].join('');
+  }
+
+  async answer(question: string, chatId = 'local-chat'): Promise<RagAnswer> {
+    const sources = this.getSources(question, 5);
+
+    const content = this.buildLocalStudyResponse(question, sources);
 
     return {
       sources,
