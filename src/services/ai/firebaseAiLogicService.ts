@@ -53,7 +53,10 @@ const buildPrompt = (question: string, sourceText: string) =>
   ].join('\n\n');
 
 class FirebaseAiLogicService {
-  private model = getGenerativeModel(firebaseAI, { model: MODEL_NAME });
+  private model = getGenerativeModel(firebaseAI, {
+    model: MODEL_NAME,
+    systemInstruction: SYSTEM_INSTRUCTION,
+  });
 
   async answer({ question, chatId, history = [] }: AnswerParams): Promise<AiLogicAnswer> {
     const sources = ragService.getSources(question, 5);
@@ -62,7 +65,6 @@ class FirebaseAiLogicService {
     try {
       const chat = this.model.startChat({
         history: toFirebaseHistory(history),
-        systemInstruction: SYSTEM_INSTRUCTION,
         generationConfig: {
           temperature: 0.35,
           maxOutputTokens: 900,
